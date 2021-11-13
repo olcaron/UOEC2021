@@ -40,8 +40,9 @@ public class Main {
         String callUrl;
          callUrl = urlFormating(streetAddress);
          String callResponse;
-         callResponse = curl(callUrl);
-        System.out.println("callResponse :" + callResponse);
+         String json = curl(callUrl);
+        System.out.println("callResponse :" + json);
+        parseJSON(json);
 
         return null;
     }
@@ -149,19 +150,18 @@ public class Main {
     }
 
 
-    public static void parseJSON() {
-        static String json = "...";
+    public static void parseJSON(String json) {
 
+        //JSONArray array = new JSONArray(json);
         JSONObject obj = new JSONObject(json);
-        String pageName = obj.getJSONObject("pageInfo").getString("pageName");
+        JSONArray array = obj.getJSONArray("results");
 
-        System.out.println(pageName);
 
-        JSONArray arr = obj.getJSONArray("posts");
-        for (int i = 0; i < arr.length(); i++) {
-            String post_id = arr.getJSONObject(i).getString("post_id");
-            System.out.println(post_id);
-        }
+        Double lng = array.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+        Double lat = array.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+
+        
+
 
     }
 }
