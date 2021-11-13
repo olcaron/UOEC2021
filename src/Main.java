@@ -1,3 +1,4 @@
+//imports
 import java.util.ArrayList;
 
 import java.io.BufferedReader;
@@ -7,11 +8,23 @@ import java.net.URL;
 import java.net.URLConnection;
 
 
+import javax.swing.JOptionPane;
+
+
 public class Main {
 
     public ArrayList<Coordinates> path = new ArrayList<Coordinates>();
     public static void main(String[] args) {
-        System.out.println(getAltitude("39.7391536", "-104.9847034"));
+        String streetAddress;
+        int bearing;
+        int offset;
+
+        streetAddress = JOptionPane.showInputDialog("Please enter street address");
+        bearing = Integer.parseInt(JOptionPane.showInputDialog("Please enter bearing"));
+        offset = Integer.parseInt(JOptionPane.showInputDialog("Please enter offset in m (use integers)"));
+
+
+        System.out.println("street address: " + streetAddress + ", Bearing : " + bearing + ", offset : " + offset + " m");
     }
 
     public Coordinates getCoordinatesWithAdress() {
