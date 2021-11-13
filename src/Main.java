@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 public class Main {
 
     public ArrayList<Coordinates> path = new ArrayList<Coordinates>();
+    public int interval = 10; // meters
+    public int crusingAltitude = 1000; // meters
     public static void main(String[] args) {
         String streetAddress;
         int bearing;
@@ -34,7 +36,15 @@ public class Main {
     public void findPath() {}
 
     public void decoler(Coordinates startingPoint) {
-
+        Coordinates current = startingPoint;
+        while (current.elevation < startingPoint.elevation + crusingAltitude) {
+            double newHight = current.elevation + interval;
+            if (newHight >= startingPoint.elevation + crusingAltitude) {
+            newHight = startingPoint.elevation + crusingAltitude;
+            }
+            current = new Coordinates(current.elevation + interval, current.latitude, current.longitude);
+            path.add(current);
+        }
     }
 
     public void atterir() {}
