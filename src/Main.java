@@ -11,6 +11,7 @@ public class Main {
 
     public ArrayList<Coordinates> path = new ArrayList<Coordinates>();
     public static void main(String[] args) {
+        System.out.println(getAltitude("39.7391536", "-104.9847034"));
     }
 
     public Coordinates getCoordinatesWithAdress() {
@@ -24,6 +25,15 @@ public class Main {
     }
 
     public void atterir() {}
+
+    public static double getAltitude(String lat, String lon) {
+        String http  = "https://maps.googleapis.com/maps/api/elevation/json" + "?locations=" + lat + "+%2C" + lon + "&key=AIzaSyD3AlQuRcSyxOPDw49Mn2T846kH1G0j5zo";
+        String res = curl(http);
+        
+        String[] both = res.split("elevation\" : ");
+        String[] ans = both[1].split(",");
+        return Double.parseDouble(ans[0]);
+    }
 
     public double getReletiveAltitude() {
         return 0;
