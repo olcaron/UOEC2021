@@ -8,6 +8,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 import javax.swing.JOptionPane;
 
@@ -115,5 +118,22 @@ public class Main {
         String finalUrl = baseUrl + "address="+ streetAddress + key;
 
         return finalUrl;
+    }
+
+
+    public static void parseJSON() {
+        static String json = "...";
+
+        JSONObject obj = new JSONObject(json);
+        String pageName = obj.getJSONObject("pageInfo").getString("pageName");
+
+        System.out.println(pageName);
+
+        JSONArray arr = obj.getJSONArray("posts");
+        for (int i = 0; i < arr.length(); i++) {
+            String post_id = arr.getJSONObject(i).getString("post_id");
+            System.out.println(post_id);
+        }
+
     }
 }
