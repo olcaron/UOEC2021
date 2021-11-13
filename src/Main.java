@@ -42,12 +42,22 @@ public class Main {
             if (newHight >= startingPoint.elevation + crusingAltitude) {
             newHight = startingPoint.elevation + crusingAltitude;
             }
-            current = new Coordinates(current.elevation + interval, current.latitude, current.longitude);
+            current = new Coordinates(newHight, current.latitude, current.longitude);
             path.add(current);
         }
     }
 
-    public void atterir() {}
+    public void atterir(Coordinates endpoint, Coordinates landdingPoint) {
+        Coordinates current = endpoint;
+        while (current.elevation > landdingPoint.elevation) {
+            double newHight = current.elevation - interval;
+            if (newHight <= landdingPoint.elevation) {
+                newHight = landdingPoint.elevation;
+            }
+            current = new Coordinates(newHight, current.latitude, current.longitude);
+            path.add(current);
+        }
+    }
 
     public static double getAltitude(String lat, String lon) {
         String http  = "https://maps.googleapis.com/maps/api/elevation/json" + "?locations=" + lat + "+%2C" + lon + "&key=AIzaSyD3AlQuRcSyxOPDw49Mn2T846kH1G0j5zo";
