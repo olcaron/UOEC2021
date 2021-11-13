@@ -8,4 +8,8 @@ public class Coordinates {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
+    public String toString() {
+        String s = "Elevation: " + elevation + " latitude: " + latitude + " longitude: " + longitude;
+    }
 }
