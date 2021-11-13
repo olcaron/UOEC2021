@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 
 
 import javax.swing.JOptionPane;
@@ -27,9 +28,18 @@ public class Main {
 
 
         System.out.println("street address: " + streetAddress + ", Bearing : " + bearing + ", offset : " + offset + " m");
+
+        getCoordinatesWithAddress(streetAddress);
+
     }
 
-    public Coordinates getCoordinatesWithAdress() {
+    public static Coordinates getCoordinatesWithAddress(String streetAddress) {
+        String callUrl;
+         callUrl = urlFormating(streetAddress);
+         String callResponse;
+         callResponse = curl(callUrl);
+        System.out.println("callResponse :" + callResponse);
+
         return null;
     }
 
@@ -98,4 +108,22 @@ public class Main {
             return null;
 		}
 	}
+
+    public static String urlFormating(String streetAddress) {
+
+        String baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?";
+        String key = "&key=AIzaSyD3AlQuRcSyxOPDw49Mn2T846kH1G0j5zo";
+        //String formatedAddress;
+        int lastSpace = 0;
+        int length = streetAddress.length();
+        char tmpChar;
+
+        streetAddress = streetAddress.replaceAll(",", "");
+        streetAddress = streetAddress.replaceAll(" ", "%20");
+        System.out.println(streetAddress);
+
+        String finalUrl = baseUrl + "address="+ streetAddress + key;
+
+        return finalUrl;
+    }
 }
