@@ -17,9 +17,9 @@ import javax.swing.JOptionPane;
 
 public class Main {
 
-    public ArrayList<Coordinates> path = new ArrayList<Coordinates>();
-    public int interval = 10; // meters
-    public int crusingAltitude = 1000; // meters
+    public static ArrayList<Coordinates> path = new ArrayList<Coordinates>();
+    public static int interval = 10; // meters
+    public static int crusingAltitude = 1000; // meters
     public static void main(String[] args) {
         String streetAddress;
         int bearing;
@@ -34,6 +34,26 @@ public class Main {
 
         getCoordinatesWithAddress(streetAddress);
 
+        // Main
+        String startingStreetAddress = "";
+        String finishStreetAddress = "";
+        int startingBearing = 0;
+        int finishBearing;
+        int startingOffset = 0;
+        int finishOffset;
+        Coordinates startingPoint = getCoordinatesWithAddress(startingStreetAddress);
+        Coordinates finishPoint = getCoordinatesWithAddress(finishStreetAddress);
+        Coordinates adjustedStartingPoint = offsetCalculator(startingPoint, startingBearing, startingOffset);
+        Coordinates adjustedFinishPoint = offsetCalculator(finishPoint, finishBearing, finishOffset);
+        decoler(adjustedStartingPoint);
+        findPath(adjustedStartingPoint, adjustedFinishPoint);
+        atterir(path.get(path.size()-1), adjustedFinishPoint);
+
+        // Printing results
+        for (Coordinates c: (Coordinates[]) path.toArray()) {
+            System.out.println(c);
+        }
+
     }
 
     public static Coordinates getCoordinatesWithAddress(String streetAddress) {
@@ -47,9 +67,21 @@ public class Main {
         return null;
     }
 
-    public void findPath() {}
+    public static void findPath(Coordinates starting, Coordinates finish) {
+        Double deltaLatitude = finish.latitude - starting.latitude;
+        Double deltaLongitude = finish.longitude = starting.longitude;
+        Double incrementsLatitude = deltaLatitude/1000;
+        Double incrementsLongitude = deltaLongitude/1000;
+        for (int i = 0; i<1000; i++) {
+            Double lat = deltaLatitude*i + starting.latitude;
+            Double lon = deltaLongitude*i + starting.longitude;
+            Double el = getAltitude(lat.toString(), lon.toString()) + crusingAltitude;
+            path.add(new Coordinates(el, lat, lon));
+        }
 
-    public Coordinates offsetCalculator(Coordinates coords,int bearing,int distance){ 
+    }
+
+    public static Coordinates offsetCalculator(Coordinates coords,int bearing,int distance){ 
         // https://www.igismap.com/formula-to-find-bearing-or-heading-angle-between-two-points-latitude-longitude/
         
         //new latitude 
@@ -67,7 +99,7 @@ public class Main {
         return newCoords;
     }
 
-    public void decoler(Coordinates startingPoint) {
+    public static void decoler(Coordinates startingPoint) {
         Coordinates current = startingPoint;
         while (current.elevation < startingPoint.elevation + crusingAltitude) {
             double newHight = current.elevation + interval;
@@ -79,7 +111,7 @@ public class Main {
         }
     }
 
-    public void atterir(Coordinates endpoint, Coordinates landdingPoint) {
+    public static void atterir(Coordinates endpoint, Coordinates landdingPoint) {
         Coordinates current = endpoint;
         while (current.elevation > landdingPoint.elevation) {
             double newHight = current.elevation - interval;
@@ -98,10 +130,6 @@ public class Main {
         String[] both = res.split("elevation\" : ");
         String[] ans = both[1].split(",");
         return Double.parseDouble(ans[0]);
-    }
-
-    public double getReletiveAltitude() {
-        return 0;
     }
 
     public static String curl(String http) {
