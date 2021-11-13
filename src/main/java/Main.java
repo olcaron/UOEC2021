@@ -48,6 +48,24 @@ public class Main {
 
     public void findPath() {}
 
+    public Coordinates offsetCalculator(Coordinates coords,int bearing,int distance){ 
+        // https://www.igismap.com/formula-to-find-bearing-or-heading-angle-between-two-points-latitude-longitude/
+        
+        //new latitude 
+        double ad = distance/6.3781*Math.pow(10,6 );
+        double newLat = Math.asin(Math.sin(Math.toRadians(coords.latitude))*Math.cos(Math.toRadians(ad))
+        +Math.cos(Math.toRadians(coords.latitude))*Math.sin(Math.toRadians(ad))*Math.cos(bearing));
+        //new longitude
+        double newLon = coords.latitude+Math.atan2(Math.sin(Math.toRadians(bearing))*Math.sin(Math.toRadians(ad))
+        *Math.cos(Math.toRadians(coords.latitude)),Math.cos(Math.toRadians(ad))-Math.sin(Math.toRadians(coords.latitude))*Math.sin(newLat));
+
+        newLat = Math.toDegrees(newLat);
+        newLon = Math.toDegrees(newLon);
+        Coordinates newCoords = new Coordinates(coords.elevation, newLat, newLon);
+
+        return newCoords;
+    }
+
     public void decoler(Coordinates startingPoint) {
         Coordinates current = startingPoint;
         while (current.elevation < startingPoint.elevation + crusingAltitude) {
@@ -55,12 +73,22 @@ public class Main {
             if (newHight >= startingPoint.elevation + crusingAltitude) {
             newHight = startingPoint.elevation + crusingAltitude;
             }
-            current = new Coordinates(current.elevation + interval, current.latitude, current.longitude);
+            current = new Coordinates(newHight, current.latitude, current.longitude);
             path.add(current);
         }
     }
 
-    public void atterir() {}
+    public void atterir(Coordinates endpoint, Coordinates landdingPoint) {
+        Coordinates current = endpoint;
+        while (current.elevation > landdingPoint.elevation) {
+            double newHight = current.elevation - interval;
+            if (newHight <= landdingPoint.elevation) {
+                newHight = landdingPoint.elevation;
+            }
+            current = new Coordinates(newHight, current.latitude, current.longitude);
+            path.add(current);
+        }
+    }
 
     public static double getAltitude(String lat, String lon) {
         String http  = "https://maps.googleapis.com/maps/api/elevation/json" + "?locations=" + lat + "+%2C" + lon + "&key=AIzaSyD3AlQuRcSyxOPDw49Mn2T846kH1G0j5zo";
