@@ -45,6 +45,24 @@ public class Main {
 
     public void findPath() {}
 
+    public Coordinates offsetCalculator(Coordinates coords,int bearing,int distance){ 
+        // https://www.igismap.com/formula-to-find-bearing-or-heading-angle-between-two-points-latitude-longitude/
+        
+        //new latitude 
+        double ad = distance/6.3781*Math.pow(10,6 );
+        double newLat = Math.asin(Math.sin(Math.toRadians(coords.latitude))*Math.cos(Math.toRadians(ad))
+        +Math.cos(Math.toRadians(coords.latitude))*Math.sin(Math.toRadians(ad))*Math.cos(bearing));
+        //new longitude
+        double newLon = coords.latitude+Math.atan2(Math.sin(Math.toRadians(bearing))*Math.sin(Math.toRadians(ad))
+        *Math.cos(Math.toRadians(coords.latitude)),Math.cos(Math.toRadians(ad))-Math.sin(Math.toRadians(coords.latitude))*Math.sin(newLat));
+
+        newLat = Math.toDegrees(newLat);
+        newLon = Math.toDegrees(newLon);
+        Coordinates newCoords = new Coordinates(coords.elevation, newLat, newLon);
+
+        return newCoords;
+    }
+
     public void decoler(Coordinates startingPoint) {
         Coordinates current = startingPoint;
         while (current.elevation < startingPoint.elevation + crusingAltitude) {
